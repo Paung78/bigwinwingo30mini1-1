@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>BigWin Wingo 30 - Results Data Viewer</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -427,7 +424,6 @@
             font-weight: 500;
         }
 
-        /* Quantum AI Key Unlock Styles */
         .hidden { display: none !important; }
         
         /* ========== PREMIUM 3D INTRO ANIMATION STYLES ========== */
@@ -612,24 +608,6 @@
                 perspective: 1000px;
             }
             
-            .quantum-gate {
-                padding: 30px 20px;
-            }
-            
-            .quantum-input {
-                padding: 14px 16px;
-                font-size: 15px;
-            }
-            
-            .quantum-timer {
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-            
-            .quantum-timer-text {
-                font-size: 0.9rem;
-            }
-            
             .button {
                 font-size: 15px;
                 padding: 0.3em 0;
@@ -711,148 +689,6 @@
                 padding: 15px 10px;
             }
             
-            .quantum-gate {
-                padding: 26px 20px 32px;
-                border-radius: 22px;
-            }
-            
-            .quantum-input {
-                letter-spacing: 0.28em;
-                font-size: 0.9rem;
-            }
-            
-            .quantum-button {
-                letter-spacing: 0.25em;
-            }
-        }
-        
-        /* ========== KEY ENTRY SECTION ========== */
-        #gate {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            overflow-x: hidden;
-            overflow-y: auto;
-            background: #03183c;
-            background-image: radial-gradient(circle at 20% 20%, rgba(98, 190, 133, 0.25), transparent 45%),
-                              radial-gradient(circle at 80% 0%, rgba(23, 174, 133, 0.2), transparent 50%),
-                              linear-gradient(135deg, #02163b 0%, #03224f 55%, #021432 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: clamp(20px, 4vw, 50px);
-        }
-
-        #gate::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: radial-gradient(60% 80% at 50% 20%, rgba(103, 182, 133, 0.3), transparent 60%);
-            opacity: 0.8;
-        }
-        
-        .quantum-gate {
-            width: min(480px, 100%);
-            padding: clamp(28px, 6vw, 48px);
-            border-radius: 28px;
-            background: rgba(5, 15, 35, 0.9);
-            border: 1px solid rgba(133, 217, 133, 0.35);
-            box-shadow:
-                0 25px 60px rgba(3, 7, 30, 0.85),
-                inset 0 0 45px rgba(133, 217, 133, 0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .quantum-gate::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(120deg, rgba(159,169,189,0.45), rgba(255,255,255,0));
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            mask-composite: xor;
-            pointer-events: none;
-        }
-        
-        .quantum-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1.3rem, 5vw, 2.1rem);
-            font-weight: 800;
-            color: #f2fbff;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            line-height: 1.3;
-            white-space: normal;
-            text-shadow: 0 0 18px rgba(133, 217, 133, 0.55);
-            margin-bottom: 8px;
-        }
-        
-        .quantum-input {
-            width: 100%;
-            padding: 18px 22px;
-            margin: 4px 0 8px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(133, 217, 133, 0.4);
-            border-radius: 18px;
-            color: #e5f2ff;
-            font-size: 1rem;
-            text-align: center;
-            transition: all 0.35s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.45em;
-            font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            box-shadow: inset 0 0 25px rgba(133, 217, 133, 0.08);
-        }
-        
-        .quantum-input::placeholder {
-            color: rgba(229, 242, 255, 0.4);
-            letter-spacing: 0.2em;
-        }
-        
-        .quantum-input:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.85);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 25px rgba(133, 217, 133, 0.35);
-            transform: translateY(-2px);
-        }
-        
-        .quantum-button {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(120deg, #75de85, #448285);
-            border: none;
-            border-radius: 999px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            box-shadow: 0 18px 38px rgba(68, 130, 133, 0.45);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .quantum-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 24px 45px rgba(68, 130, 133, 0.55);
-        }
-        
-        .quantum-button i {
-            font-size: 1.1rem;
         }
         
         /* Clock Loader */
@@ -906,6 +742,123 @@
             100% { transform: rotate(360deg); }
         }
         
+        .results-container {
+            display: none;
+        }
+        
+        .results-container.unlocked {
+            display: block;
+        }
+        
+        /* Key gate - shown after intro until key activated */
+        #gate {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background: #03183c;
+            background-image: radial-gradient(circle at 20% 20%, rgba(98, 190, 133, 0.25), transparent 45%), radial-gradient(circle at 80% 0, rgba(23, 174, 133, 0.2), transparent 50%), linear-gradient(135deg, #02163b 0, #03224f 55%, #021432 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(20px, 4vw, 50px);
+        }
+        #gate::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(60% 80% at 50% 20%, rgba(103, 182, 133, 0.3), transparent 60%);
+            opacity: 0.8;
+        }
+        .quantum-gate {
+            width: min(480px, 100%);
+            max-width: calc(100% - 40px);
+            padding: clamp(28px, 6vw, 48px);
+            border-radius: 28px;
+            background: rgba(5, 15, 35, 0.9);
+            border: 1px solid rgba(133, 217, 133, 0.35);
+            box-shadow: 0 25px 60px rgba(3, 7, 30, 0.85), inset 0 0 45px rgba(133, 217, 133, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+        .quantum-gate::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(120deg, rgba(159, 169, 189, 0.45), rgba(255, 255, 255, 0));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: xor;
+            pointer-events: none;
+        }
+        .quantum-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.3rem, 5vw, 2.1rem);
+            font-weight: 800;
+            color: #f2fbff;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            line-height: 1.3;
+            text-shadow: 0 0 18px rgba(133, 217, 133, 0.55);
+            margin-bottom: 8px;
+        }
+        .quantum-input {
+            width: 100%;
+            padding: 18px 22px;
+            margin: 4px 0 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(133, 217, 133, 0.4);
+            border-radius: 18px;
+            color: #e5f2ff;
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.35s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.45em;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: inset 0 0 25px rgba(133, 217, 133, 0.08);
+        }
+        .quantum-input::placeholder { color: rgba(229, 242, 255, 0.4); letter-spacing: 0.2em; }
+        .quantum-input:focus {
+            outline: 0;
+            border-color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 25px rgba(133, 217, 133, 0.35);
+            transform: translateY(-2px);
+        }
+        .quantum-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(120deg, #75de85, #448285);
+            border: none;
+            border-radius: 999px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            box-shadow: 0 18px 38px rgba(68, 130, 133, 0.45);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .quantum-button:hover { transform: translateY(-2px); box-shadow: 0 24px 45px rgba(68, 130, 133, 0.55); }
+        .quantum-button i { font-size: 1.1rem; }
         .quantum-timer {
             margin: 8px 0 4px;
             padding: 16px 18px;
@@ -921,92 +874,10 @@
             justify-content: center;
             gap: 10px;
         }
-        
-        .quantum-timer-text {
-            color: #e6f6ff;
-            font-weight: 800;
-            font-size: 0.9rem;
-            font-family: 'Orbitron', sans-serif;
-        }
-        
-        /* Telegram Button */
-        .telegram-button-wrapper {
-            margin-top: 20px;
-        }
-        
-        .button {
-            font-family: inherit;
-            background: rgba(255, 255, 255, 0.04);
-            color: #e6f6ff;
-            padding: 0.35em 0;
-            font-size: 0.95rem;
-            border: 1px solid rgba(133, 217, 133, 0.35);
-            border-radius: 999px;
-            letter-spacing: 0.3em;
-            position: relative;
-            display: flex;
-            align-content: center;
-            align-items: center;
-            overflow: hidden;
-            height: 3.2em;
-            padding-left: 3.2em;
-            padding-right: 1.4em;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.35s ease;
-            box-shadow: inset 0 0 18px rgba(133, 217, 133, 0.12);
-        }
-        
-        .button .icon {
-            background: rgba(255, 255, 255, 0.9);
-            height: 2.4em;
-            width: 2.4em;
-            border-radius: 50%;
-            position: absolute;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            left: 0.6em;
-            transition: all 0.45s;
-        }
-        
-        .icon svg {
-            margin-left: 0.1em;
-            transition: all 0.5s;
-            color: var(--main-color-dark);
-            width: 1.2rem;
-            height: 1.2rem;
-        }
-        
-        .button:hover .icon svg {
-            transform: rotate(360deg);
-        }
-        
-        .button:hover .icon {
-            width: calc(100% - 1rem);
-            border-radius: 999px;
-        }
-        
-        .button:hover {
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 12px 30px rgba(8, 17, 34, 0.7);
-        }
-        
-        .quantum-success {
-            display: none;
-        }
-        
-        .success-icon {
-            display: none;
-        }
-        
-        .results-container {
-            display: none;
-        }
-        
-        .results-container.unlocked {
-            display: block;
-        }
+        .quantum-timer-text { color: #e6f6ff; font-weight: 800; font-size: 0.9rem; font-family: 'Orbitron', sans-serif; }
+        .telegram-button-wrapper { margin-top: 20px; }
+        .quantum-success { display: none; }
+        .success-icon { display: none; }
         
         @media (max-width: 768px) {
             input, select, textarea {
@@ -1301,7 +1172,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        body, .container, .quantum-gate {
+        body, .container {
             will-change: auto;
         }
         
@@ -2066,45 +1937,33 @@
         </div>
     </section>
 
-    <!-- Quantum AI Key Unlock Gate -->
+    <!-- Key gate: enter quantum key to unlock results -->
     <section id="gate">
         <div class="quantum-gate">
             <h1 class="quantum-title">Lottery Tricks Ai Perdition</h1>
-            <input type="text" id="keyInput" class="quantum-input" placeholder="ENTER QUANTUM ACCESS KEY">
-            <button class="quantum-button" id="activateBtn">
-                <i class="fas fa-key"></i> ACTIVATE QUANTUM CORE
-            </button>
+            <input id="keyInput" class="quantum-input" placeholder="ENTER QUANTUM ACCESS KEY">
+            <button class="quantum-button" id="activateBtn"><i class="fas fa-key"></i> ACTIVATE QUANTUM CORE</button>
             <div id="key-timer" class="quantum-timer" style="display: none;">
-                <div class="loader">
-                    <span class="hour"></span>
-                    <span class="min"></span>
-                    <span class="circel"></span>
-                </div>
+                <div class="loader"><span class="hour"></span> <span class="min"></span> <span class="circel"></span></div>
                 <span class="quantum-timer-text" id="timerText"></span>
             </div>
             <div class="telegram-button-wrapper">
                 <a href="https://t.me/LotteryTricksAiPrediction" target="_blank" style="text-decoration: none;">
                     <button class="button">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"></path>
-                            </svg>
-                        </div>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"></path></svg></div>
                         <p>Telegram Channel</p>
                     </button>
                 </a>
             </div>
             <div id="key-content" class="quantum-success">
-                <div class="success-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3 style="margin-bottom: 8px; color: #85D985; font-size: 1rem;">QUANTUM ACCESS GRANTED</h3>
-                <p style="color: #85D985; margin-bottom: 12px; font-size: 0.75rem;">Neural network initialized successfully</p>
+                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                <h3 style="margin-bottom: 8px; color: #85d985; font-size: 1rem;">QUANTUM ACCESS GRANTED</h3>
+                <p style="color: #85d985; margin-bottom: 12px; font-size: 0.75rem;">Neural network initialized successfully</p>
             </div>
         </div>
     </section>
 
-    <!-- Results Container (Hidden until unlocked) -->
+    <!-- Results Container -->
     <div class="container results-container" id="resultsContainer">
         <h1>Lottery Tricks Ai Perdition</h1>
         <div class="title-subtitle">
@@ -2238,172 +2097,86 @@
         }
         
         function startIntroAnimation() {
-            // Create premium cosmic background particles
             createCosmicParticles();
-            
-            // Premium 3D animation duration: 2.3 seconds + 0.7s fade out = 3 seconds total
             setTimeout(() => {
                 const introEl = document.getElementById('introAnimation');
                 introEl.classList.add('fade-out');
-                
-                // Hide intro and show gate after fade out
                 setTimeout(() => {
                     introEl.style.display = 'none';
                     document.getElementById('gate').style.display = 'block';
-                    // Continue with existing initialization
                     initializeAfterIntro();
-                }, 700); // Fade out duration
-            }, 2300); // Total intro duration: 2.3 seconds (premium 3D animation)
+                }, 700);
+            }, 2300);
         }
         
         function initializeAfterIntro() {
-            // Set up unlock button handler
-            document.getElementById("activateBtn").addEventListener("click", activateKey);
-            document.getElementById("keyInput").addEventListener("keyup", (e) => { if (e.key === "Enter") activateKey(); });
-            
-            // Initialize login Firebase first to get server time offset
-            if (initializeLoginFirebase()) {
-                // Wait a bit for server offset to be retrieved
-                setTimeout(() => {
-                    // Check if already unlocked using server time
-                    if (expireTime && getServerTime() < expireTime && activatedKeyId) {
+            document.getElementById('activateBtn').addEventListener('click', activateKey);
+            document.getElementById('keyInput').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') activateKey();
+            });
+            fetch(API_BASE_URL + 'firebase.php?action=serverTime')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data && typeof data.t === 'number') serverOffset = data.t - Date.now();
+                    if (expireTime && getServerTime() < expireTime && localStorage.getItem('authToken')) {
                         startSession();
-                        startKeyMonitoring(activatedKeyId);
+                        setTimeout(connectFirebase, 500);
                     } else {
-                        // Show gate if not unlocked (already shown)
-                        document.getElementById("gate").style.display = "block";
-                        document.getElementById("resultsContainer").classList.remove("unlocked");
-                        // Clear invalid stored data
-                        if (!expireTime || !activatedKeyId) {
+                        document.getElementById('gate').style.display = 'block';
+                        document.getElementById('resultsContainer').classList.remove('unlocked');
+                        if (!expireTime || !localStorage.getItem('authToken')) {
                             localStorage.removeItem('expireTime');
                             localStorage.removeItem('activatedKeyId');
+                            localStorage.removeItem('authToken');
                         }
                     }
-                    
-                    // Initialize results Firebase
-                    if (initializeFirebase()) {
-                        // Only auto-connect if unlocked
-                        if (expireTime && getServerTime() < expireTime && activatedKeyId) {
-                            setTimeout(connectFirebase, 500);
-                        }
-                    }
-                }, 500);
-            } else {
-                // If login Firebase fails, show gate
-                document.getElementById("gate").style.display = "block";
-                document.getElementById("resultsContainer").classList.remove("unlocked");
-            }
+                })
+                .catch(function() {
+                    document.getElementById('gate').style.display = 'block';
+                    document.getElementById('resultsContainer').classList.remove('unlocked');
+                });
         }
         
-        // ========== QUANTUM AI KEY UNLOCK FUNCTIONALITY ==========
-        const loginConfig = {
-            apiKey: "AIzaSyBynBT5W_C6rNVEUB4j7ABiJQeSfQGU4Mo",
-            authDomain: "lotteryoo.firebaseapp.com",
-            databaseURL: "https://lotteryoo-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "lotteryoo",
-            storageBucket: "lotteryoo.firebasestorage.app",
-            messagingSenderId: "72782915477",
-            appId: "1:72782915477:web:011fc0a614aff7c666b89c",
-            measurementId: "G-M06SN8YLD3"
-        };
-        
-        let loginApp = null;
-        let loginDb = null;
         let serverOffset = 0;
-        let expireTime = parseInt(localStorage.getItem('expireTime')) || 0;
+        let expireTime = parseInt(localStorage.getItem('expireTime'), 10) || 0;
         let activatedKeyId = localStorage.getItem('activatedKeyId') || null;
         let timerInterval = null;
-        let keyStatusListener = null;
-        
-        // Get server time (to prevent client time manipulation)
         const getServerTime = () => Date.now() + serverOffset;
         
-        function initializeLoginFirebase() {
-            try {
-                loginApp = firebase.initializeApp(loginConfig, 'login');
-                loginDb = loginApp.database();
-                // Get server time offset to prevent time manipulation
-                loginDb.ref(".info/serverTimeOffset").on("value", snapshot => {
-                    serverOffset = snapshot?.val() || 0;
-                });
-                return true;
-            } catch (error) {
-                console.error('Login Firebase init error:', error);
-                return false;
-            }
-        }
-        
         function activateKey() {
-            const key = document.getElementById('keyInput').value.trim().toUpperCase();
-            if (!key) {
-                alert("Please enter a quantum access key");
-                return;
-            }
-            
+            const keyVal = document.getElementById('keyInput').value.trim().toUpperCase();
+            if (!keyVal) { alert('Please enter a quantum access key'); return; }
             const btn = document.getElementById('activateBtn');
-            const originalText = btn.innerHTML;
+            const btnHtml = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFYING...';
             btn.disabled = true;
-            
-            if (!loginDb) {
-                if (!initializeLoginFirebase()) {
-                    btn.innerHTML = originalText;
+            fetch(API_BASE_URL + 'firebase.php?key=' + encodeURIComponent(keyVal))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    btn.innerHTML = btnHtml;
                     btn.disabled = false;
-                    alert("Failed to initialize quantum network");
-                    return;
-                }
-            }
-            
-            loginDb.ref('keys/' + key).once('value').then(snapshot => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    
-                    // Check key type - only accept BigWin keys (strict validation)
-                    if (!data.keyType || data.keyType !== "bigwin") {
-                        const keyTypeName = data.keyType === "ck" ? "CK" : data.keyType === "6wingo" ? "6Wingo" : "Unknown";
-                        alert(`âŒ Invalid Key Type! This is a ${keyTypeName} key. Only keys generated by BigWinKeyAdmin can be used with BigWin results pages.`);
-                        return;
+                    if (data && data.ok === true) {
+                        serverOffset = (data.serverTime || Date.now()) - Date.now();
+                        expireTime = data.expireTime || getServerTime() + (data.duration || 0) * 60 * 1000;
+                        localStorage.setItem('expireTime', expireTime);
+                        localStorage.setItem('authToken', data.token || '');
+                        activatedKeyId = keyVal;
+                        localStorage.setItem('activatedKeyId', keyVal);
+                        document.getElementById('key-content').style.display = 'block';
+                        alert('Quantum Access Activated! Added ' + (data.duration || 0) + ' minutes');
+                        document.getElementById('keyInput').value = '';
+                        startSession();
+                        setTimeout(connectFirebase, 500);
+                    } else {
+                        alert(data && data.error ? data.error : 'Invalid Quantum Key');
                     }
-                    
-                    if (data.used) {
-                        alert("This quantum key has already been used!");
-                        return;
-                    }
-                    
-                    const extraTime = data.duration * 60 * 1000;
-                    // Use server time to prevent manipulation
-                    const currentServerTime = getServerTime();
-                    expireTime = Math.max(currentServerTime, expireTime) + extraTime;
-                    localStorage.setItem('expireTime', expireTime);
-                    
-                    // Store server timestamp when key is activated
-                    loginDb.ref('keys/' + key).update({ 
-                        used: true,
-                        activatedAt: firebase.database.ServerValue.TIMESTAMP,
-                        expiresAt: expireTime
-                    });
-                    
-                    // Store activated key ID for monitoring
-                    activatedKeyId = key;
-                    localStorage.setItem('activatedKeyId', key);
-                    
-                    document.getElementById('key-content').style.display = 'block';
-                    alert(`Quantum Access Activated! Added ${data.duration} minutes`);
-                    document.getElementById('keyInput').value = '';
-                    startSession();
-                    startKeyMonitoring(key);
-                } else {
-                    alert("Invalid Quantum Key");
-                }
-            }).catch(error => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                alert("Quantum Network Error. Please try again.");
-                console.error(error);
-            });
+                })
+                .catch(function(err) {
+                    btn.innerHTML = btnHtml;
+                    btn.disabled = false;
+                    alert('Quantum Network Error. Please try again.');
+                    console.error(err);
+                });
         }
         
         function startSession() {
@@ -2413,186 +2186,54 @@
         }
         
         function updateTimer() {
-            // Use server time to prevent client time manipulation
-            const serverTime = getServerTime();
-            const remaining = expireTime - serverTime;
-            const gate = document.getElementById("gate");
-            const resultsContainer = document.getElementById("resultsContainer");
-            const timerEl = document.getElementById('key-timer');
-            const resultsTimeEl = document.getElementById('resultsTimeRemaining');
+            const now = getServerTime();
+            const remaining = expireTime - now;
+            const gateEl = document.getElementById('gate');
+            const resultsEl = document.getElementById('resultsContainer');
+            const keyTimerEl = document.getElementById('key-timer');
+            const resultsTimeRemaining = document.getElementById('resultsTimeRemaining');
             const resultsTimeText = document.getElementById('resultsTimeText');
-            
             if (remaining <= 0) {
                 clearInterval(timerInterval);
-                timerEl.textContent = "Quantum Access Expired";
+                if (keyTimerEl) keyTimerEl.textContent = 'Quantum Access Expired';
                 document.getElementById('key-content').style.display = 'none';
-                if (resultsTimeEl) resultsTimeEl.style.display = 'none';
-                gate.style.display = "block";
-                resultsContainer.classList.remove("unlocked");
+                if (resultsTimeRemaining) resultsTimeRemaining.style.display = 'none';
+                gateEl.style.display = 'block';
+                resultsEl.classList.remove('unlocked');
                 localStorage.removeItem('expireTime');
                 localStorage.removeItem('activatedKeyId');
+                localStorage.removeItem('authToken');
                 activatedKeyId = null;
-                if (firebaseListener && db) {
-                    db.ref(FIREBASE_PATH).off('value', firebaseListener);
-                    firebaseListener = null;
-                }
-                if (keyStatusListener && loginDb && activatedKeyId) {
-                    loginDb.ref('keys/' + activatedKeyId).off('value', keyStatusListener);
-                    keyStatusListener = null;
-                }
+                if (resultsPollingInterval) { clearInterval(resultsPollingInterval); resultsPollingInterval = null; }
                 return;
             }
-            
-            const hours = Math.floor(remaining / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-            
-            const timeText = `${hours}h ${minutes}m ${seconds}s`;
+            const timeStr = Math.floor(remaining / 3600000) + 'h ' + Math.floor((remaining % 3600000) / 60000) + 'm ' + Math.floor((remaining % 60000) / 1000) + 's';
             const timerTextEl = document.getElementById('timerText');
-            if (timerTextEl) {
-                timerTextEl.textContent = timeText;
-            }
-            if (timerEl) {
-                timerEl.style.display = 'flex';
-            }
-            
-            // Update results page time display
-            if (resultsTimeEl && resultsTimeText) {
-                resultsTimeText.textContent = timeText;
-                resultsTimeEl.style.display = 'block';
-            }
-            
-            gate.style.display = "none";
-            resultsContainer.classList.add("unlocked");
-            
-            // Show bottom menu when unlocked
-            // Navigation buttons are handled by setupMenuButtons
-            
-            if (db && !firebaseListener) {
-                setTimeout(connectFirebase, 500);
-            }
+            if (timerTextEl) timerTextEl.textContent = timeStr;
+            if (keyTimerEl) keyTimerEl.style.display = 'flex';
+            if (resultsTimeText) resultsTimeText.textContent = timeStr;
+            if (resultsTimeRemaining) resultsTimeRemaining.style.display = 'flex';
+            gateEl.style.display = 'none';
+            resultsEl.classList.add('unlocked');
+            if (!resultsPollingInterval) setTimeout(connectFirebase, 500);
         }
         
-        // Monitor key status in Firebase for deactivation
-        function startKeyMonitoring(keyId) {
-            if (!loginDb || !keyId) return;
-            
-            // Remove existing listener if any
-            if (keyStatusListener && activatedKeyId) {
-                loginDb.ref('keys/' + activatedKeyId).off('value', keyStatusListener);
-            }
-            
-            // Listen for key status changes
-            keyStatusListener = loginDb.ref('keys/' + keyId).on('value', (snapshot) => {
-                if (!snapshot.exists()) {
-                    // Key was deleted from Firebase - check local expiration time first
-                    const remaining = expireTime - getServerTime();
-                    if (remaining > 0) {
-                        // Key deleted but local time still valid - keep access until local time expires
-                        // Don't redirect, let the timer handle expiration
-                        return;
-                    } else {
-                        // Key deleted and expired - normal expiration
-                        redirectToUnlock("Session expired");
-                    }
-                    return;
-                }
-                
-                const keyData = snapshot.val();
-                
-                // If key is activated (used=true), check only expiration time
-                // Key should remain valid until expiration, regardless of other flags
-                if (keyData.used === true) {
-                    // Check local expiration time (more reliable than Firebase timestamp)
-                    const remaining = expireTime - getServerTime();
-                    if (remaining <= 0) {
-                        redirectToUnlock("Session expired");
-                        return;
-                    }
-                    
-                    // Also check Firebase expiration if exists
-                    if (keyData.expiresAt && keyData.expiresAt < getServerTime()) {
-                        redirectToUnlock("Key has expired");
-                        return;
-                    }
-                    
-                    // Key is still valid - do nothing
-                    return;
-                }
-                
-                // If key is not activated (used=false), check if it was deactivated
-                // Only redirect if key was reset to inactive state after being activated
-                if (keyData.used === false && keyData.claimed === false && keyId === activatedKeyId) {
-                    // Key was reset/deactivated by admin before expiration
-                    const remaining = expireTime - getServerTime();
-                    if (remaining > 0) {
-                        // Still has time but key was deactivated
-                        redirectToUnlock("Key has been deactivated by admin");
-                    }
-                    return;
-                }
-            });
-        }
+        const API_BASE_URL = (function() {
+            const path = location.pathname;
+            return path.substring(0, path.lastIndexOf('/') + 1);
+        })();
         
-        function redirectToUnlock(reason) {
-            // Stop all timers and listeners
-            if (timerInterval) clearInterval(timerInterval);
-            if (keyStatusListener && loginDb && activatedKeyId) {
-                loginDb.ref('keys/' + activatedKeyId).off('value', keyStatusListener);
-            }
-            if (firebaseListener && db) {
-                db.ref(FIREBASE_PATH).off('value', firebaseListener);
-            }
-            
-            // Clear storage
-            localStorage.removeItem('expireTime');
-            localStorage.removeItem('activatedKeyId');
-            expireTime = 0;
-            activatedKeyId = null;
-            
-            // Show alert and redirect
-            alert(`âŒ ${reason || "Session expired"}. Redirecting to unlock page...`);
-            
-            const gate = document.getElementById("gate");
-            const resultsContainer = document.getElementById("resultsContainer");
-            const resultsTimeEl = document.getElementById('resultsTimeRemaining');
-            
-            if (resultsTimeEl) resultsTimeEl.style.display = 'none';
-            gate.style.display = "block";
-            resultsContainer.classList.remove("unlocked");
-            document.getElementById('key-content').style.display = 'none';
-        }
-        
-        // ========== RESULTS FIREBASE CONFIGURATION ==========
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDj6z3O91NnlQ1zVdripiGhqQMsQhR4_ak",
-            authDomain: "ck30-35e97.firebaseapp.com",
-            databaseURL: "https://ck30-35e97-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "ck30-35e97",
-            storageBucket: "ck30-35e97.appspot.com",
-            messagingSenderId: "625630152314",
-            appId: "1:625630152314:web:c035009eec389371b51dc3",
-            measurementId: "G-6Z7DYPKHR2"
-        };
-
-        // Firebase path
-        const FIREBASE_PATH = "bigwin/default";
-
-        let db = null;
         let currentResults = [];
-        let firebaseListener = null;
-
-        // Initialize Firebase
-        function initializeFirebase() {
+        let resultsPollingInterval = null;
+        
+        function decodeApiResponse(encoded) {
             try {
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.database();
-                return true;
-            } catch (error) {
-                console.error('Firebase initialization error:', error);
-                showStatus(`âŒ Firebase initialization failed: ${error.message}`, 'error');
-                return false;
+                let decoded = atob(encoded);
+                if (decoded.indexOf('.') !== -1) decoded = decoded.split('.')[0];
+                return JSON.parse(atob(decoded));
+            } catch (e) {
+                console.error('Decode API response error:', e);
+                return null;
             }
         }
 
@@ -2692,8 +2333,9 @@
             const mainPrediction = document.getElementById('predictionBox');
             const wasitePrediction = document.getElementById('ckLotteryPredictionBox');
             
+            // Main prediction box always visible
             if (mainPrediction) {
-                mainPrediction.style.display = hasData ? 'flex' : 'none';
+                mainPrediction.style.display = 'flex';
             }
             
             if (wasitePrediction) {
@@ -2736,7 +2378,8 @@
         function updateStats(results) {
             if (!results || results.length === 0) {
                 document.getElementById('mergedStats').style.display = 'none';
-                document.getElementById('predictionBox').style.display = 'none';
+                setPredictionDisplays('-', '-', '-');
+                togglePredictionBoxes(false);
                 return;
             }
 
@@ -2832,9 +2475,18 @@
             }
         }
 
-        function renderTable(results) {
+        // V1.2-style incremental history
+        let displayedHistory = [];
+        let lastSeenLatestPeriodKey = null;
+
+        function getPeriodKey(r) {
+            const v = r.issueNumber ?? r.period ?? r.issue ?? r.periodNumber ?? '';
+            return String(v);
+        }
+
+        function renderTable(fullResults, historyResults) {
             const tableContainer = document.getElementById('resultsTable');
-            const normalizedResults = normalizeResultsData(results);
+            const normalizedResults = normalizeResultsData(fullResults || []);
             
             if (!normalizedResults || normalizedResults.length === 0) {
                 tableContainer.innerHTML = `
@@ -2847,6 +2499,20 @@
                     </div>
                 `;
                 updateStats([]);
+                displayedHistory = [];
+                lastSeenLatestPeriodKey = null;
+                return;
+            }
+
+            updateStats(normalizedResults);
+
+            const toShow = historyResults && historyResults.length ? historyResults : [];
+            if (toShow.length === 0) {
+                tableContainer.innerHTML = `
+                    <div class="no-data">
+                        <p>Waiting for next period...</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -2865,25 +2531,22 @@
                     <tbody>
             `;
 
-            normalizedResults.forEach((result, index) => {
+            toShow.forEach((result, index) => {
                 const bigSmall = classifyBigSmall(result.number);
                 const bigSmallClass = bigSmall === 'BIG' ? 'big' : 'small';
                 const premium = result.premium || '-';
                 
-                // Get last 5 digits of period number
                 let periodNumber = result.issueNumber || '-';
                 if (periodNumber !== '-' && periodNumber.toString().length > 5) {
                     periodNumber = periodNumber.toString().slice(-5);
                 }
                 
-                // Calculate Historical Prediction
-                // We use the history *after* this result (index + 1 onwards) to verify what we WOULD have predicted
-                const historyForThisRow = results.slice(index + 1);
+                const idxInFull = normalizedResults.findIndex(x => getPeriodKey(x) === getPeriodKey(result));
+                const historyForThisRow = idxInFull >= 0 ? normalizedResults.slice(idxInFull + 1) : [];
                 const predictedValue = calculatePrediction(historyForThisRow);
                 
                 let resultHtml = '<span class="pending-tag">WAIT</span>';
                 
-                // If we have at least 2 results for prediction, calculate Win/Lose
                 if (predictedValue && bigSmall) {
                     if (predictedValue === bigSmall) {
                         resultHtml = '<span class="win-tag">WIN</span>';
@@ -2891,7 +2554,6 @@
                         resultHtml = '<span class="lose-tag">LOSE</span>';
                     }
                 } else if (historyForThisRow.length < 2) {
-                    // Not enough history for prediction (less than 2 results)
                     resultHtml = '<span class="pending-tag">-</span>';
                 } else {
                      resultHtml = '<span class="pending-tag">-</span>';
@@ -2915,56 +2577,51 @@
             `;
 
             tableContainer.innerHTML = html;
-            updateStats(normalizedResults);
-            // Also update BigWin Wasite prediction if container is visible
             const ckLotteryContainer = document.getElementById('ckLotteryContainer');
             if (ckLotteryContainer && ckLotteryContainer.style.display !== 'none') {
                 updateCkLotteryPrediction();
             }
         }
 
+        function processFirebaseData(data) {
+            const list = data && data.list && Array.isArray(data.list) ? data.list : [];
+            if (list.length === 0) {
+                renderTable([], []);
+                return;
+            }
+            const normalizedList = normalizeResultsData(list);
+            const currentLatestKey = getPeriodKey(normalizedList[0]);
+            if (lastSeenLatestPeriodKey === null) {
+                lastSeenLatestPeriodKey = currentLatestKey;
+                displayedHistory = [];
+            } else if (currentLatestKey !== lastSeenLatestPeriodKey && normalizedList.length >= 2) {
+                displayedHistory = [normalizedList[1]].concat(displayedHistory);
+                lastSeenLatestPeriodKey = currentLatestKey;
+            }
+            renderTable(normalizedList, displayedHistory);
+        }
+
         function connectFirebase() {
-            if (!db) {
-                if (!initializeFirebase()) {
-                    return;
-                }
+            function poll() {
+                const url = API_BASE_URL + 'firebase.php?token=' + encodeURIComponent(localStorage.getItem('authToken') || '');
+                fetch(url)
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data && data.d) {
+                            const decoded = decodeApiResponse(data.d);
+                            if (decoded) {
+                                const list = decoded.list && Array.isArray(decoded.list) ? decoded.list : [];
+                                currentResults = normalizeResultsData(list);
+                                processFirebaseData(decoded);
+                                updateLastUpdateTime(decoded.publishedAt || Date.now());
+                            } else renderTable([], []);
+                        } else renderTable([], []);
+                    })
+                    .catch(function(err) { console.error('API fetch error:', err); renderTable([], []); });
             }
-
-            // Status message hidden
-            // showStatus('Connecting to Firebase Realtime Database...', 'loading');
-
-            try {
-                // Remove existing listener if any
-                if (firebaseListener) {
-                    db.ref(FIREBASE_PATH).off('value', firebaseListener);
-                    firebaseListener = null;
-                }
-
-                // Set up real-time listener
-                firebaseListener = db.ref(FIREBASE_PATH).on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    
-                    if (data && data.list && Array.isArray(data.list)) {
-                        currentResults = normalizeResultsData(data.list);
-                        renderTable(currentResults);
-                        updateLastUpdateTime(data.publishedAt || Date.now());
-                        // Status message hidden - removed showStatus
-                        // showStatus(`âœ… Connected - ${currentResults.length} results loaded`, 'success');
-                    } else {
-                        // Status message hidden
-                        // showStatus('âš ï¸ No data found in Firebase. Waiting for data...', 'loading');
-                        renderTable([]);
-                    }
-                }, (error) => {
-                    console.error('Firebase read error:', error);
-                    // Status message hidden
-                    // showStatus(`âŒ Firebase Error: ${error.message}`, 'error');
-                });
-            } catch (error) {
-                console.error('Error connecting to Firebase:', error);
-                // Status message hidden
-                // showStatus(`âŒ Connection Error: ${error.message}`, 'error');
-            }
+            if (resultsPollingInterval) { clearInterval(resultsPollingInterval); resultsPollingInterval = null; }
+            poll();
+            resultsPollingInterval = setInterval(poll, 12000);
         }
 
         // ========== BOTTOM MENU BUTTONS FUNCTIONALITY ==========
@@ -3164,8 +2821,9 @@
 
         // Cleanup on page unload
         window.addEventListener('beforeunload', function() {
-            if (firebaseListener && db) {
-                db.ref(FIREBASE_PATH).off('value', firebaseListener);
+            if (resultsPollingInterval) {
+                clearInterval(resultsPollingInterval);
+                resultsPollingInterval = null;
             }
         });
     </script>
