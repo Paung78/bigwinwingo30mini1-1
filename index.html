@@ -1919,6 +1919,8 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 </head>
 <body>
     <!-- Intro Animation -->
@@ -2114,34 +2116,119 @@
             document.getElementById('keyInput').addEventListener('keyup', function(e) {
                 if (e.key === 'Enter') activateKey();
             });
-            fetch(API_BASE_URL + 'firebase.php?action=serverTime')
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    if (data && typeof data.t === 'number') serverOffset = data.t - Date.now();
-                    if (expireTime && getServerTime() < expireTime && localStorage.getItem('authToken')) {
-                        startSession();
-                        setTimeout(connectFirebase, 500);
-                    } else {
-                        document.getElementById('gate').style.display = 'block';
-                        document.getElementById('resultsContainer').classList.remove('unlocked');
-                        if (!expireTime || !localStorage.getItem('authToken')) {
-                            localStorage.removeItem('expireTime');
-                            localStorage.removeItem('activatedKeyId');
-                            localStorage.removeItem('authToken');
-                        }
-                    }
-                })
-                .catch(function() {
-                    document.getElementById('gate').style.display = 'block';
-                    document.getElementById('resultsContainer').classList.remove('unlocked');
-                });
+            if (!initializeLoginFirebase()) {
+                document.getElementById('gate').style.display = 'block';
+                document.getElementById('resultsContainer').classList.remove('unlocked');
+                return;
+            }
+            if (expireTime && getServerTime() < expireTime && activatedKeyId) {
+                startSession();
+                setTimeout(connectFirebase, 500);
+            } else {
+                document.getElementById('gate').style.display = 'block';
+                document.getElementById('resultsContainer').classList.remove('unlocked');
+                if (!expireTime || !activatedKeyId) {
+                    localStorage.removeItem('expireTime');
+                    localStorage.removeItem('activatedKeyId');
+                }
+            }
         }
+        
+        const loginConfig = {
+            apiKey: "AIzaSyAy3QvFmhKiOX38MZiINfZq2yYXGhb7uL8",
+            authDomain: "ck-adm.firebaseapp.com",
+            databaseURL: "https://ck-adm-default-rtdb.europe-west1.firebasedatabase.app/",
+            projectId: "ck-adm",
+            storageBucket: "ck-adm.appspot.com",
+            messagingSenderId: "192822942347",
+            appId: "1:192822942347:web:f27eee393e16c84544528e"
+        };
+        const RESULTS_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBMRKbOavHAQTbufOjcAbnSxZH89-SeGek",
+            authDomain: "ck30-35e97.firebaseapp.com",
+            databaseURL: "https://ck30-35e97-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "ck30-35e97",
+            storageBucket: "ck30-35e97.appspot.com",
+            messagingSenderId: "625630152314",
+            appId: "1:625630152314:web:c035009eec389371b51dc3"
+        };
+        const FIREBASE_PATH = 'bigwin/default';
+        
+        let loginApp = null;
+        let loginDb = null;
+        let resultsDb = null;
+        let resultsApp = null;
+        let keyStatusListener = null;
+        let firebaseListener = null;
         
         let serverOffset = 0;
         let expireTime = parseInt(localStorage.getItem('expireTime'), 10) || 0;
         let activatedKeyId = localStorage.getItem('activatedKeyId') || null;
         let timerInterval = null;
         const getServerTime = () => Date.now() + serverOffset;
+        
+        function initializeLoginFirebase() {
+            try {
+                if (loginDb) return true;
+                loginApp = firebase.initializeApp(loginConfig, 'bw30Login');
+                loginDb = loginApp.database();
+                loginDb.ref(".info/serverTimeOffset").on("value", function(snapshot) {
+                    serverOffset = snapshot && snapshot.val() ? snapshot.val() : 0;
+                });
+                return true;
+            } catch (e) {
+                console.error('Login Firebase init error:', e);
+                return false;
+            }
+        }
+        
+        function initializeResultsFirebase() {
+            try {
+                if (resultsDb) return true;
+                resultsApp = firebase.initializeApp(RESULTS_FIREBASE_CONFIG, 'bw30Results');
+                resultsDb = resultsApp.database();
+                return true;
+            } catch (e) {
+                console.error('Results Firebase init error:', e);
+                return false;
+            }
+        }
+        
+        function startKeyMonitoring(keyId) {
+            if (!loginDb || !keyId) return;
+            if (keyStatusListener && activatedKeyId) {
+                loginDb.ref('keys/' + activatedKeyId).off('value', keyStatusListener);
+            }
+            keyStatusListener = loginDb.ref('keys/' + keyId).on('value', function(snapshot) {
+                if (!snapshot.exists()) return;
+                var d = snapshot.val();
+                if (d.used && d.expiresAt && d.expiresAt < getServerTime()) {
+                    redirectToUnlock('Key expired');
+                } else if (d.used === false && keyId === activatedKeyId) {
+                    redirectToUnlock('Key deactivated');
+                }
+            });
+        }
+        
+        function redirectToUnlock(reason) {
+            if (timerInterval) clearInterval(timerInterval);
+            if (resultsPollingInterval) { clearInterval(resultsPollingInterval); resultsPollingInterval = null; }
+            if (firebaseListener && resultsDb) { resultsDb.ref(FIREBASE_PATH).off('value', firebaseListener); firebaseListener = null; }
+            if (keyStatusListener && loginDb && activatedKeyId) {
+                loginDb.ref('keys/' + activatedKeyId).off('value', keyStatusListener);
+                keyStatusListener = null;
+            }
+            localStorage.removeItem('expireTime');
+            localStorage.removeItem('activatedKeyId');
+            expireTime = 0;
+            activatedKeyId = null;
+            document.getElementById('gate').style.display = 'block';
+            document.getElementById('resultsContainer').classList.remove('unlocked');
+            document.getElementById('key-content').style.display = 'none';
+            var el = document.getElementById('resultsTimeRemaining');
+            if (el) el.style.display = 'none';
+            alert(reason || 'Session expired');
+        }
         
         function activateKey() {
             const keyVal = document.getElementById('keyInput').value.trim().toUpperCase();
@@ -2150,33 +2237,52 @@
             const btnHtml = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFYING...';
             btn.disabled = true;
-            fetch(API_BASE_URL + 'firebase.php?key=' + encodeURIComponent(keyVal))
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    btn.innerHTML = btnHtml;
-                    btn.disabled = false;
-                    if (data && data.ok === true) {
-                        serverOffset = (data.serverTime || Date.now()) - Date.now();
-                        expireTime = data.expireTime || getServerTime() + (data.duration || 0) * 60 * 1000;
-                        localStorage.setItem('expireTime', expireTime);
-                        localStorage.setItem('authToken', data.token || '');
-                        activatedKeyId = keyVal;
-                        localStorage.setItem('activatedKeyId', keyVal);
-                        document.getElementById('key-content').style.display = 'block';
-                        alert('Quantum Access Activated! Added ' + (data.duration || 0) + ' minutes');
-                        document.getElementById('keyInput').value = '';
-                        startSession();
-                        setTimeout(connectFirebase, 500);
-                    } else {
-                        alert(data && data.error ? data.error : 'Invalid Quantum Key');
+            if (!loginDb && !initializeLoginFirebase()) {
+                btn.innerHTML = btnHtml;
+                btn.disabled = false;
+                alert('Quantum Network Error. Please try again.');
+                return;
+            }
+            loginDb.ref('keys/' + keyVal).once('value').then(function(snapshot) {
+                btn.innerHTML = btnHtml;
+                btn.disabled = false;
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    if (data.keyType && data.keyType !== 'bigwin') {
+                        alert('Invalid key type. This page requires a BigWin key.');
+                        return;
                     }
-                })
-                .catch(function(err) {
-                    btn.innerHTML = btnHtml;
-                    btn.disabled = false;
-                    alert('Quantum Network Error. Please try again.');
-                    console.error(err);
-                });
+                    if (data.used) {
+                        alert('This quantum key has already been used!');
+                        return;
+                    }
+                    const duration = data.duration || 60;
+                    const extraTime = duration * 60 * 1000;
+                    serverOffset = (typeof serverOffset === 'number') ? serverOffset : 0;
+                    expireTime = getServerTime() + extraTime;
+                    localStorage.setItem('expireTime', expireTime);
+                    activatedKeyId = keyVal;
+                    localStorage.setItem('activatedKeyId', keyVal);
+                    loginDb.ref('keys/' + keyVal).update({
+                        used: true,
+                        activatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        expiresAt: expireTime
+                    });
+                    document.getElementById('key-content').style.display = 'block';
+                    alert('Quantum Access Activated! Added ' + duration + ' minutes');
+                    document.getElementById('keyInput').value = '';
+                    startSession();
+                    startKeyMonitoring(keyVal);
+                    setTimeout(connectFirebase, 500);
+                } else {
+                    alert('Invalid Quantum Key');
+                }
+            }).catch(function(err) {
+                btn.innerHTML = btnHtml;
+                btn.disabled = false;
+                alert('Quantum Network Error. Please try again.');
+                console.error(err);
+            });
         }
         
         function startSession() {
@@ -2202,9 +2308,14 @@
                 resultsEl.classList.remove('unlocked');
                 localStorage.removeItem('expireTime');
                 localStorage.removeItem('activatedKeyId');
-                localStorage.removeItem('authToken');
+                var keyToClean = activatedKeyId;
                 activatedKeyId = null;
                 if (resultsPollingInterval) { clearInterval(resultsPollingInterval); resultsPollingInterval = null; }
+                if (firebaseListener && resultsDb) { resultsDb.ref(FIREBASE_PATH).off('value', firebaseListener); firebaseListener = null; }
+                if (keyStatusListener && loginDb && keyToClean) {
+                    loginDb.ref('keys/' + keyToClean).off('value', keyStatusListener);
+                    keyStatusListener = null;
+                }
                 return;
             }
             const timeStr = Math.floor(remaining / 3600000) + 'h ' + Math.floor((remaining % 3600000) / 60000) + 'm ' + Math.floor((remaining % 60000) / 1000) + 's';
@@ -2217,11 +2328,6 @@
             resultsEl.classList.add('unlocked');
             if (!resultsPollingInterval) setTimeout(connectFirebase, 500);
         }
-        
-        const API_BASE_URL = (function() {
-            const path = location.pathname;
-            return path.substring(0, path.lastIndexOf('/') + 1);
-        })();
         
         let currentResults = [];
         let resultsPollingInterval = null;
@@ -2602,26 +2708,24 @@
         }
 
         function connectFirebase() {
-            function poll() {
-                const url = API_BASE_URL + 'firebase.php?token=' + encodeURIComponent(localStorage.getItem('authToken') || '');
-                fetch(url)
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) {
-                        if (data && data.d) {
-                            const decoded = decodeApiResponse(data.d);
-                            if (decoded) {
-                                const list = decoded.list && Array.isArray(decoded.list) ? decoded.list : [];
-                                currentResults = normalizeResultsData(list);
-                                processFirebaseData(decoded);
-                                updateLastUpdateTime(decoded.publishedAt || Date.now());
-                            } else renderTable([], []);
-                        } else renderTable([], []);
-                    })
-                    .catch(function(err) { console.error('API fetch error:', err); renderTable([], []); });
+            if (!resultsDb && !initializeResultsFirebase()) return;
+            if (firebaseListener) {
+                resultsDb.ref(FIREBASE_PATH).off('value', firebaseListener);
+                firebaseListener = null;
             }
-            if (resultsPollingInterval) { clearInterval(resultsPollingInterval); resultsPollingInterval = null; }
-            poll();
-            resultsPollingInterval = setInterval(poll, 12000);
+            firebaseListener = resultsDb.ref(FIREBASE_PATH).on('value', function(snapshot) {
+                const data = snapshot.val();
+                if (data && data.list && Array.isArray(data.list)) {
+                    currentResults = normalizeResultsData(data.list);
+                    processFirebaseData(data);
+                    updateLastUpdateTime(data.publishedAt || Date.now());
+                } else {
+                    renderTable([], []);
+                }
+            }, function(err) {
+                console.error('Firebase read error:', err);
+                renderTable([], []);
+            });
         }
 
         // ========== BOTTOM MENU BUTTONS FUNCTIONALITY ==========
