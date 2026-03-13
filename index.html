@@ -2165,20 +2165,21 @@
                 document.getElementById('gate').style.display = 'block';
                 document.getElementById('resultsContainer').classList.remove('unlocked');
                 if (!expireTime || !activatedKeyId) {
-                    localStorage.removeItem('expireTime');
-                    localStorage.removeItem('activatedKeyId');
+                    localStorage.removeItem('bw30ExpireTime');
+                    localStorage.removeItem('bw30ActivatedKeyId');
                 }
             }
         }
         
+        // Use BigWin Key Bot Firebase (lotteryoo) same as Mini1-2
         const loginConfig = {
-            apiKey: "AIzaSyAy3QvFmhKiOX38MZiINfZq2yYXGhb7uL8",
-            authDomain: "ck-adm.firebaseapp.com",
-            databaseURL: "https://ck-adm-default-rtdb.europe-west1.firebasedatabase.app/",
-            projectId: "ck-adm",
-            storageBucket: "ck-adm.appspot.com",
-            messagingSenderId: "192822942347",
-            appId: "1:192822942347:web:f27eee393e16c84544528e"
+            apiKey: "AIzaSyBynBT5W_C6rNVEUB4j7ABiJQeSfQGU4Mo",
+            authDomain: "lotteryoo.firebaseapp.com",
+            databaseURL: "https://lotteryoo-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "lotteryoo",
+            storageBucket: "lotteryoo.firebasestorage.app",
+            messagingSenderId: "72782915477",
+            appId: "1:72782915477:web:011fc0a614aff7c666b89c"
         };
         const RESULTS_FIREBASE_CONFIG = {
             apiKey: "AIzaSyBMRKbOavHAQTbufOjcAbnSxZH89-SeGek",
@@ -2199,8 +2200,9 @@
         let firebaseListener = null;
         
         let serverOffset = 0;
-        let expireTime = parseInt(localStorage.getItem('expireTime'), 10) || 0;
-        let activatedKeyId = localStorage.getItem('activatedKeyId') || null;
+        // Use separate storage keys so CK unlocks do not auto-unlock BigWin
+        let expireTime = parseInt(localStorage.getItem('bw30ExpireTime'), 10) || 0;
+        let activatedKeyId = localStorage.getItem('bw30ActivatedKeyId') || null;
         let timerInterval = null;
         const getServerTime = () => Date.now() + serverOffset;
         
@@ -2255,8 +2257,8 @@
                 loginDb.ref('keys/' + activatedKeyId).off('value', keyStatusListener);
                 keyStatusListener = null;
             }
-            localStorage.removeItem('expireTime');
-            localStorage.removeItem('activatedKeyId');
+            localStorage.removeItem('bw30ExpireTime');
+            localStorage.removeItem('bw30ActivatedKeyId');
             expireTime = 0;
             activatedKeyId = null;
             document.getElementById('gate').style.display = 'block';
@@ -2285,7 +2287,8 @@
                 btn.disabled = false;
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    if (data.keyType && data.keyType !== 'bigwin') {
+                    // Require explicit BigWin key type (reject keys without keyType or non-bigwin)
+                    if (data.keyType !== 'bigwin') {
                         alert('Invalid key type. This page requires a BigWin key.');
                         return;
                     }
@@ -2297,9 +2300,9 @@
                     const extraTime = duration * 60 * 1000;
                     serverOffset = (typeof serverOffset === 'number') ? serverOffset : 0;
                     expireTime = getServerTime() + extraTime;
-                    localStorage.setItem('expireTime', expireTime);
+                    localStorage.setItem('bw30ExpireTime', expireTime);
                     activatedKeyId = keyVal;
-                    localStorage.setItem('activatedKeyId', keyVal);
+                    localStorage.setItem('bw30ActivatedKeyId', keyVal);
                     loginDb.ref('keys/' + keyVal).update({
                         used: true,
                         activatedAt: firebase.database.ServerValue.TIMESTAMP,
@@ -2343,8 +2346,8 @@
                 if (resultsTimeRemaining) resultsTimeRemaining.style.display = 'none';
                 gateEl.style.display = 'block';
                 resultsEl.classList.remove('unlocked');
-                localStorage.removeItem('expireTime');
-                localStorage.removeItem('activatedKeyId');
+                localStorage.removeItem('bw30ExpireTime');
+                localStorage.removeItem('bw30ActivatedKeyId');
                 var keyToClean = activatedKeyId;
                 activatedKeyId = null;
                 if (resultsPollingInterval) { clearInterval(resultsPollingInterval); resultsPollingInterval = null; }
@@ -2732,15 +2735,33 @@
                 renderTable([], []);
                 return;
             }
+
             const normalizedList = normalizeResultsData(list);
-            const currentLatestKey = getPeriodKey(normalizedList[0]);
+            if (!normalizedList || normalizedList.length === 0) {
+                renderTable([], []);
+                return;
+            }
+
+            // Treat normalizedList[0] as the latest finished period result
+            const latestRecord = normalizedList[0];
+            const currentLatestKey = getPeriodKey(latestRecord);
+
+            if (!currentLatestKey) {
+                // Fallback: just render whatever history we currently have
+                renderTable(normalizedList, displayedHistory);
+                return;
+            }
+
             if (lastSeenLatestPeriodKey === null) {
+                // First load: show the latest finished period as the first history row
                 lastSeenLatestPeriodKey = currentLatestKey;
-                displayedHistory = [];
-            } else if (currentLatestKey !== lastSeenLatestPeriodKey && normalizedList.length >= 2) {
-                displayedHistory = [normalizedList[1]].concat(displayedHistory);
+                displayedHistory = [latestRecord];
+            } else if (currentLatestKey !== lastSeenLatestPeriodKey) {
+                // New period arrived: prepend the new latest result to history
+                displayedHistory = [latestRecord].concat(displayedHistory);
                 lastSeenLatestPeriodKey = currentLatestKey;
             }
+
             renderTable(normalizedList, displayedHistory);
         }
 
